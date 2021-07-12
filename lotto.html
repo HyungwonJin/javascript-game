@@ -18,58 +18,97 @@
 </head>
 
 <body>
+  <h1>숫자 7개를 입력하시오.</h1>
+  <form id="form">
+    <input type="text", id="number">
+    <button>확인</button>
+  </form>
+  <div id="log"></div>
 <div id="result">추첨 결과는? </div>
 <div id="bonus">보너스: </div>
+<div id="hitnum">맞은 갯수:</div>
 <script>
+  const $form = document.querySelector("form");
+  const $input = document.querySelector("input");
+  const $log = document.querySelector("#log");
+  const $hitnum = document.querySelector('#hitnum');
   const candidate = Array(45).fill().map((v, i) => i + 1);
   const shuffle = [];
-  while(candidate.length > 0){
-      const random = Math.floor(Math.random() * candidate.length);
-      const spliceArray = candidate.splice(random, 1);
-      const value = spliceArray[0];
-      shuffle.push(value);
-  }
-    console.log(shuffle);
-    const winBall = shuffle.splice(0, 6).sort((a, b) => a - b);
-    const bonus = shuffle[6];
-    console.log(winBall, bonus);
 
-    const $result = document.querySelector("#result");
-    const $bonus = document.querySelector("#bonus");
-
-    function colorize(number, $tag) {
-    if (number < 10) {
-      $tag.style.backgroundColor = 'red';
-      $tag.style.color = 'white';
-    } else if (number < 20) {
-      $tag.style.backgroundColor = 'orange';
-    } else if (number < 30) {
-      $tag.style.backgroundColor = 'yellow';
-    } else if (number < 40) {
-      $tag.style.backgroundColor = 'blue';
-      $tag.style.color = 'white';
-    } else {
-      $tag.style.backgroundColor = 'green';
-      $tag.style.color = 'white';
+  $form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const value = $input.value.split(" ").map(Number);
+    if(value.length === 7){
+      $input.value = '';
+      $log.append(value, document.createElement("br"));      
+      start(value);
     }
-  }
+  })
 
-    const showball = (number, $target) => {
-        const $ball = document.createElement("div");
-        $ball.className = "ball";
-        colorize(number, $ball);
-        $ball.textContent = number;
-        $target.appendChild($ball);
+  const start = (array) => {
+    while(candidate.length > 0){
+        const random = Math.floor(Math.random() * candidate.length);
+        const spliceArray = candidate.splice(random, 1);
+        const value = spliceArray[0];
+        shuffle.push(value);
     }
-
-    for (let i = 0; i < 6; i++) {
-        setTimeout(() => {
-            showball(winBall[i], $result)
-        }, (i+1) * 1000);        
+      console.log(shuffle);
+      const winBall = shuffle.splice(0, 6).sort((a, b) => a - b);
+      const bonus = shuffle[6];
+      console.log(winBall, bonus);
+  
+      const $result = document.querySelector("#result");
+      const $bonus = document.querySelector("#bonus");
+  
+      function colorize(number, $tag) {
+      if (number < 10) {
+        $tag.style.backgroundColor = 'red';
+        $tag.style.color = 'white';
+      } else if (number < 20) {
+        $tag.style.backgroundColor = 'orange';
+      } else if (number < 30) {
+        $tag.style.backgroundColor = 'yellow';
+      } else if (number < 40) {
+        $tag.style.backgroundColor = 'blue';
+        $tag.style.color = 'white';
+      } else {
+        $tag.style.backgroundColor = 'green';
+        $tag.style.color = 'white';
+      }
     }
-
+  
+      const showball = (number, $target) => {
+          const $ball = document.createElement("div");
+          $ball.className = "ball";
+          colorize(number, $ball);
+          $ball.textContent = number;
+          $target.appendChild($ball);
+      }
+  
+      for (let i = 0; i < 6; i++) {
+          setTimeout(() => {
+              showball(winBall[i], $result)
+          }, (i+1) * 1000);        
+      }
+  
+      setTimeout(() => {
+          showball(bonus, $bonus);
+      }, 7000);
+    
+    let count = 0
+    winBall.push(bonus);
+    console.log(winBall);
+    console.log(array);
+    for (let i = 0; i < winBall.length; i++) {
+        if (array.includes(winBall[i])){
+          count += 1
+        }
+    }
+    console.log(count);
     setTimeout(() => {
-        showball(bonus, $bonus);
-    }, 7000);
+        $hitnum.append(`${count}개 맞았습니다.`)
+          
+      }, 8000);
+  }
 </script>
 </body>
