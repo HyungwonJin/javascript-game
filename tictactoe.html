@@ -73,7 +73,7 @@
     }
 
     const checkWinDraw = (target) => {
-        const hasWinner = checkWinner(event.target);
+        const hasWinner = checkWinner(target);
                 if (hasWinner) {
                     $result.textContent = `${turn}님의 승리!`;
                     $table.removeEventListener("click", callback);
@@ -97,8 +97,11 @@
                 turn = turn === "O" ? "X" : "O";
             }
     
-    
+    let clickable = true
     const callback = (event) => {
+        if (!clickable){
+            return;
+        }
             if(event.target.textContent !== '') {
                 console.log("빈칸이 아닙니다.")
                 return;
@@ -111,8 +114,12 @@
             if(turn === 'X'){
                 const emptyCells = rows.flat().filter((v) => !v.textContent);
                 const randomCells = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                randomCells.textContent = turn;
-                checkWinDraw(event.target);
+                clickable = false;
+                setTimeout(() => {
+                    randomCells.textContent = turn;
+                    checkWinDraw(randomCells);
+                    clickable = true;
+                }, 1000)
             }
         }
 
